@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="38">
+  <CheatEntries/>
+  <UserdefinedSymbols/>
+  <LuaScript>local cleanups = {}
+
+function removeDissectCalls()
+  for i, callback in ipairs(cleanups) do
+    callback()
+  end
+end
+
+local function findSection(menu, n)
+  local i = 0
+  local count = 0
+  while true do
+    if count == n then return i end
+    if menu.Items[i].Caption == "-" then
+       count = count + 1
+    end
+    i = i + 1
+  end
+end
+
+local function insertInSection(menu, sectionIndex, offset, menuItem)
+  local index = findSection(menu, sectionIndex) + offset
+  table.insert(cleanups, function()
+    menu.Items.delete(index)
+    menuItem.destroy()
+  end)
+  menu.Items.insert(index, menuItem)
+end
+
+local mv=getMemoryViewForm()
+local mi=createMenuItem(mv.Menu)
+mi.Caption="Dissect call stack"
+mi.Shortcut='Ctrl+Shift+K'
+mi.ImageIndex=64
+mi.OnClick=function() print("Foo!") end
+insertInSection(mv.debuggerpopup, 3, -1, mi)
+
+MENU_ITEM = mi
+
+</LuaScript>
+</CheatTable>
