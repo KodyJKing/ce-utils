@@ -1,45 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <CheatTable CheatEngineTableVersion="38">
+  <Forms>
+    <DissectCallStack Class="TCEForm" Encoding="Ascii85">m6FX.,b_S]g-k3vrbEln)ssoYctRMuk4-XkFbz_C%38KXqKP79B(Cpt.aR%v@r/TOFF._?o$MpsbMANVF9)3@dNM#,Je}--e0xrnB884IW2wf*VmBeT,R31MLFjC+.f/4tmGc_*ZfL3J(gY#sqe9c4Bo/st!4RBY29b}?kzWhJRj]-SbfYv]UJ/=qjg.yQBgo6uImJxOP;ffa3ho^;=#I@txbokN86^k_=m[,8n*j19]9Y,zkI@t3gkQn_u*T},s:X[GZwsjpBVNpfOle7MH)^IAi@mDh2_Ibey/ocQ@xpK26M3^1zuOSc/iqE)Js{={840b$vH{PvEx#kn5B3^.e+mhVtDuJ$MnQN^RRISLsTD3LpM[PC.o.MtBPrIrg#F.#dYKyvQ[eQNm+ISBZ$Yq_k$dgJlYy5KJ58w{@vy9Le5U6RytDcR/$7W_iUkuAp?K!sV1FXj/8p6RBv:W6mo=lvey.*kA42[;)0*Z_za_7vU,KBq8Q*B},7{gEV?aAuJOF$XGg:!1Zg#Tv7]7gtDv#5}/FXrqix;7^I_UCf;WHATGqtvacOJXAG3Etfk9Mhk])nG!18B2,tg?W[ljQ}T#$p:*0s#I3</DissectCallStack>
+  </Forms>
   <CheatEntries/>
   <UserdefinedSymbols/>
-  <LuaScript>local cleanups = {}
-
-function removeDissectCalls()
-  for i, callback in ipairs(cleanups) do
-    callback()
-  end
-end
-
-local function findSection(menu, n)
-  local i = 0
-  local count = 0
-  while true do
-    if count == n then return i end
-    if menu.Items[i].Caption == "-" then
-       count = count + 1
-    end
-    i = i + 1
-  end
-end
-
-local function insertInSection(menu, sectionIndex, offset, menuItem)
-  local index = findSection(menu, sectionIndex) + offset
-  table.insert(cleanups, function()
-    menu.Items.delete(index)
-    menuItem.destroy()
-  end)
-  menu.Items.insert(index, menuItem)
-end
-
-local mv=getMemoryViewForm()
-local mi=createMenuItem(mv.Menu)
-mi.Caption="Dissect call stack"
-mi.Shortcut='Ctrl+Shift+K'
-mi.ImageIndex=64
-mi.OnClick=function() print("Foo!") end
-insertInSection(mv.debuggerpopup, 3, -1, mi)
-
-MENU_ITEM = mi
-
+  <LuaScript>dofile("dissectCallStack.lua")
 </LuaScript>
 </CheatTable>

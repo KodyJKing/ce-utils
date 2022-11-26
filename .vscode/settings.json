@@ -1,0 +1,12 @@
+{
+    "Lua.diagnostics.disable": [
+        "lowercase-global"
+    ],
+    "Lua.diagnostics.globals": [
+        "getMemoryViewForm",
+        "createMenuItem",
+        "createFormFromFile",
+        "getOperatingSystem",
+        "getAutoRunPath"
+    ]
+}
