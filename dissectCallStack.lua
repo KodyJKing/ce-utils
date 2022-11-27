@@ -8,14 +8,21 @@ local function toHex(n) return string.format("%x", n):upper() end
 
 local function printHex(n) print(toHex(n)) end
 
-local function cwd() return io.popen "cd":read '*l' end
-
-local function getFrameBase()
+local function getBasePointer()
     if targetIs64Bit() then
         return RBP
     end
     return EBP
 end
+
+local function getStackPointer()
+    if targetIs64Bit() then
+        return RSP
+    end
+    return ESP
+end
+
+local function cwd() return io.popen "cd":read '*l' end
 
 local pathsep
 if getOperatingSystem() == 0 then
@@ -43,6 +50,7 @@ local function findSection(menu, n)
     local count = 0
     while true do
         if count == n then return i end
+        -- Items with caption "-" are treated as dividers.
         if menu.Items[i].Caption == "-" then
             count = count + 1
         end
@@ -54,6 +62,11 @@ local function insertInSection(menu, sectionIndex, offset, menuItem)
     menu.Items.insert(findSection(menu, sectionIndex) + offset, menuItem)
 end
 
+local function addStructAddress(structForm, address)
+    local column = structForm.addColumn()
+    column.AddressText = toHex(address)
+end
+
 ------------
 -- Module --
 ------------
@@ -63,8 +76,9 @@ function module.applyExtension()
     local mi = createMenuItem(mv.Menu)
     mi.Caption = "Dissect call stack"
     mi.Shortcut = 'Ctrl+Shift+K'
-    mi.ImageIndex = 64
+    mi.ImageIndex = 64 -- Stack Debug Icon
     mi.OnClick = module.createSession
+    -- Insert at the end of section 2.
     insertInSection(mv.debuggerpopup, 3, -1, mi)
 end
 
@@ -72,6 +86,7 @@ function module.createSession()
     local session = {
         onClose = {},
         dialog = createFormFromFile(formPath .. "DissectCallStack.FRM"),
+        structForm = nil,
         resultPointers = {},
     }
 
@@ -98,14 +113,33 @@ function module.createSession()
 
         session.maxCalls = tonumber(session.dialog.findComponentByName("MaxCalls").Text)
         session.snapshotSize = tonumber(session.dialog.findComponentByName("SnapshotSize").Text)
+        session.useStackPointer = session.dialog.findComponentByName("UseStackPointer").Checked
 
-        -- print(session.address, session.maxCalls, session.snapshotSize)
+        local foundLabel = session.dialog.findComponentByName("Found")
 
         debug_setBreakpoint(session.address, function()
-            print("Saving snapshot...")
-            local bp = getFrameBase()
-            local resultPtr = copyMemory(bp, session.snapshotSize)
+            -- print("Saving snapshot...")
+            local ptr
+            if session.useStackPointer then
+                ptr = getStackPointer()
+            else
+                ptr = getBasePointer()
+            end
+            local resultPtr = copyMemory(ptr, session.snapshotSize)
             table.insert(session.resultPointers, resultPtr)
+
+            local found = #session.resultPointers
+            foundLabel.Caption = tostring(found)
+
+            if session.structForm == nil then
+                session.structForm = createStructureForm(toHex(resultPtr))
+            else
+                addStructAddress(session.structForm, resultPtr)
+            end
+
+            if found >= session.maxCalls then
+                session.stop()
+            end
         end)
     end
 
@@ -120,11 +154,11 @@ function module.createSession()
     session.addCleanup(session.stop)
     session.addCleanup(function()
         for i, ptr in ipairs(session.resultPointers) do
-            print("Deallocating", toHex(ptr))
+            -- print("Deallocating", toHex(ptr))
             deAlloc(ptr)
         end
     end)
-    session.addCleanup(function() print("Cleaned up!") end)
+    -- session.addCleanup(function() print("Cleaned up!") end)
 
     local mv = getMemoryViewForm()
     local a = mv.DisassemblerView.SelectedAddress

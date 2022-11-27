@@ -38,6 +38,7 @@
         "ESP",
         "EIP",
         "copyMemory",
-        "deAlloc"
+        "deAlloc",
+        "createStructureForm"
     ]
 }
