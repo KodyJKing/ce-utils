@@ -1,45 +1,12 @@
 local module = {}
+local common = require("ceutils_lib.common")
 
 ------------------
 -- Misc Helpers --
 ------------------
 
-local function toHex(n) return string.format("%x", n):upper() end
-
-local function printHex(n) print(toHex(n)) end
-
-local function getBasePointer()
-    if targetIs64Bit() then
-        return RBP
-    end
-    return EBP
-end
-
-local function getStackPointer()
-    if targetIs64Bit() then
-        return RSP
-    end
-    return ESP
-end
-
-local function cwd() return io.popen "cd":read '*l' end
-
-local pathsep
-if getOperatingSystem() == 0 then
-    pathsep = [[\]]
-else
-    pathsep = [[/]]
-end
-
-local dev = true
-local root
-if dev then
-    root = cwd() .. pathsep
-else
-    -- root = getAutoRunPath() .. 'ceutils' .. pathsep
-    root = getAutoRunPath() .. pathsep
-end
-local formPath = root .. pathsep .. 'forms' .. pathsep
+local toHex = common.toHex
+local formPath = common.formPath
 
 --------------------
 --- Form Helpers ---
@@ -121,9 +88,9 @@ function module.createSession()
             -- print("Saving snapshot...")
             local ptr
             if session.useStackPointer then
-                ptr = getStackPointer()
+                ptr = common.getStackPointer()
             else
-                ptr = getBasePointer()
+                ptr = common.getBasePointer()
             end
             local resultPtr = copyMemory(ptr, session.snapshotSize)
             table.insert(session.resultPointers, resultPtr)
@@ -143,6 +110,13 @@ function module.createSession()
         end)
     end
 
+    session.addCleanup(function()
+        for i, ptr in ipairs(session.resultPointers) do
+            -- print("Deallocating", toHex(ptr))
+            deAlloc(ptr)
+        end
+    end)
+
     function session.stop()
         if session.stopped then return end
         session.stopped = true
@@ -152,10 +126,10 @@ function module.createSession()
     end
 
     session.addCleanup(session.stop)
+
     session.addCleanup(function()
-        for i, ptr in ipairs(session.resultPointers) do
-            -- print("Deallocating", toHex(ptr))
-            deAlloc(ptr)
+        if session.structForm ~= nil then
+            session.structForm.close()
         end
     end)
     -- session.addCleanup(function() print("Cleaned up!") end)

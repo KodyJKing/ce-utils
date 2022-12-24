@@ -39,6 +39,14 @@
         "EIP",
         "copyMemory",
         "deAlloc",
-        "createStructureForm"
+        "createStructureForm",
+        "createMemoryStream",
+        "executeCodeLocalEx",
+        "enumMemoryRegions",
+        "getPointerSize",
+        "readPointer",
+        "disassemble",
+        "splitDisassembledString",
+        "GetTickCount"
     ]
 }
