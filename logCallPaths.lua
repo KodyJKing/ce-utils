@@ -84,6 +84,23 @@ function getCallChain(regionMap, stackLimit)
 
 end
 
+function getSubItemUnderMouse(listView, numColumns)
+    local sx, sy = getMousePos()
+    local x, y = listView.screenToClient(sx, sy)
+
+    local listItem = listView.getItemAt(x, y)
+    if not listItem then return end
+
+    local columns = listView.Columns
+    for i = 0, numColumns - 1 do
+        x = x - columns[i].Width
+        if x < 0 then
+            return listItem, i
+        end
+    end
+    return nil
+end
+
 --------------------------------------------------------------
 
 -- createCallChainLogForm(0x004EF49F)
@@ -185,45 +202,22 @@ function createCallChainLogForm(initialAddress)
         form.Destroy()
     end
 
+    listView.OnClick = function(...)
+        local numColumns = 2 + NUM_CALLER_COLUMNS
+        local item, colIndex = getSubItemUnderMouse(listView, numColumns)
+
+        if item == nil or colIndex <= 0 then return end
+
+        local addressString = item.SubItems[colIndex - 1]
+        local address = tonumber("0x" .. addressString)
+
+        local memForm = getMemoryViewForm()
+        memForm.visible = true
+        memForm.DisassemblerView.selectedAddress = address
+    end
+
     -----------
 
     form.visible = true
-
-end
-
--- printCallPaths(0x004EF49F)
-function printCallPaths(address, options)
-    options = options or {}
-    local callLimit = options.callLimit or 10
-    local stackLimit = options.stackLimit or 4096
-
-    local regionMap = getRegionMap()
-    local calls = 0
-
-    local callChainSet = {}
-
-    debug_setBreakpoint(address, function()
-
-        calls = calls + 1
-        local removedBreakpoint = false
-        if calls >= callLimit then
-            removedBreakpoint = true
-            debug_removeBreakpoint(address)
-        end
-
-        local path = getCallChain(regionMap, stackLimit)
-
-        local callChain = table.concat(functional.map(path, pad), " <- ")
-        if not callChainSet[callChain] then
-            callChainSet[callChain] = true
-            print(callChain)
-            print("")
-        end
-
-        if removedBreakpoint then
-            print("Removed breakpoint.")
-        end
-
-    end)
 
 end

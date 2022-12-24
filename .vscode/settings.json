@@ -48,6 +48,7 @@
         "disassemble",
         "splitDisassembledString",
         "GetTickCount",
-        "getAddress"
+        "getAddress",
+        "getMousePos"
     ]
 }
