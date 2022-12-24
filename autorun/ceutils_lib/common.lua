@@ -12,7 +12,7 @@ else
 end
 
 local _cwd = cwd()
-local dev = not string.find(_cwd, "autorun")
+local dev = not not string.find(_cwd, "ce-utils")
 if dev then print("Running CE-Utils in dev mode.") end
 local rootPath
 if dev then
@@ -20,7 +20,7 @@ if dev then
 else
     rootPath = getAutoRunPath() .. pathsep
 end
-local formPath = rootPath .. pathsep .. 'forms' .. pathsep
+local formPath = rootPath .. pathsep .. "ceutils_lib" .. pathsep .. 'forms' .. pathsep
 
 ----------------------------------------------------------
 

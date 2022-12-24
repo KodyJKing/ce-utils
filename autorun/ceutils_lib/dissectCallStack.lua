@@ -1,5 +1,5 @@
 local module = {}
-local common = require("ceutils_lib.common")
+local common = require("autorun.ceutils_lib.common")
 
 ------------------
 -- Misc Helpers --

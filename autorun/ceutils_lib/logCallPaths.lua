@@ -1,15 +1,13 @@
-local json = require("ceutils_lib.json")
-
-package.loaded["ceutils_lib.common"] = nil
-local common = require("ceutils_lib.common")
+package.loaded["autorun.ceutils_lib.common"] = nil
+local common = require("autorun.ceutils_lib.common")
 
 if common.dev then
-    package.loaded["ceutils_lib.createRegionMap"] = nil
-    package.loaded["ceutils_lib.functional"] = nil
+    package.loaded["autorun.ceutils_lib.createRegionMap"] = nil
+    package.loaded["autorun.ceutils_lib.functional"] = nil
 end
 
-local createRegionMap = require("ceutils_lib.createRegionMap")
-local functional = require("ceutils_lib.functional")
+local createRegionMap = require("autorun.ceutils_lib.createRegionMap")
+local functional = require("autorun.ceutils_lib.functional")
 
 --------------------------------------------------------------
 
