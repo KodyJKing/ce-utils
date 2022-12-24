@@ -344,7 +344,7 @@
       </Elements>
     </Structure>
   </Structures>
-  <LuaScript>--dofile("dissectCallStack.lua")
+  <LuaScript>dofile("dissectCallStack.lua")
 dofile("logCallPaths.lua")
 </LuaScript>
 </CheatTable>

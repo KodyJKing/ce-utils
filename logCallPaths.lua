@@ -21,7 +21,7 @@ end
 
 --------------------------------------------------------------
 
-function getPrecedingCall(address)
+local function getPrecedingCall(address)
     local maxOffset = 64
 
     for offset = 1, maxOffset do
@@ -52,7 +52,7 @@ local _regionMapGoodUntil = 0
 local _cachedRegionMap = nil
 local _REGION_MAP_MAX_AGE = 1000 * 60 * 5
 --
-function getRegionMap()
+local function getRegionMap()
     if true or _cachedRegionMap == nil or GetTickCount() > _regionMapGoodUntil then
         _cachedRegionMap = createRegionMap()
         _regionMapGoodUntil = GetTickCount() + _REGION_MAP_MAX_AGE
@@ -84,7 +84,7 @@ function getCallChain(regionMap, stackLimit)
 
 end
 
-function getSubItemUnderMouse(listView, numColumns)
+local function getSubItemUnderMouse(listView, numColumns)
     local sx, sy = getMousePos()
     local x, y = listView.screenToClient(sx, sy)
 
@@ -221,3 +221,28 @@ function createCallChainLogForm(initialAddress)
     form.visible = true
 
 end
+
+local function applyExtension()
+    local mv = getMemoryViewForm()
+
+    local caption = "Find out what calls lead here"
+    local mi = common.findItemWithCaption(mv.debuggerpopup, caption)
+    if not mi then
+        mi = createMenuItem(mv.Menu)
+        mi.Caption = caption
+        -- Insert at the end of section 2.
+        common.insertMenuItemInSection(mv.debuggerpopup, 3, -1, mi)
+    end
+
+    mi.Shortcut = 'Ctrl+Shift+C'
+    mi.ImageIndex = 33 -- Stack Debug Icon
+
+    mi.OnClick = function()
+        local a = mv.DisassemblerView.SelectedAddress
+        local b = mv.DisassemblerView.SelectedAddress2 or a
+        local address = math.min(a, b)
+        createCallChainLogForm(address)
+    end
+end
+
+applyExtension()

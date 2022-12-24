@@ -40,6 +40,33 @@ end
 
 ----------------------------------------------------------
 
+local function findSection(menu, n)
+    local i = 0
+    local count = 0
+    while true do
+        if count == n then return i end
+        -- Items with caption "-" are treated as dividers.
+        if menu.Items[i].Caption == "-" then
+            count = count + 1
+        end
+        i = i + 1
+    end
+end
+
+local function insertMenuItemInSection(menu, sectionIndex, offset, menuItem)
+    menu.Items.insert(findSection(menu, sectionIndex) + offset, menuItem)
+end
+
+local function findItemWithCaption(menu, caption)
+    for i = 0, menu.Items.Count - 1 do
+        if menu.Items[i].Caption == caption then
+            return menu.Items[i], i
+        end
+    end
+end
+
+----------------------------------------------------------
+
 local function getBasePointer()
     if targetIs64Bit() then return RBP end
     return EBP
@@ -56,15 +83,21 @@ local function getPointerSize()
 end
 
 return {
+    cwd = cwd,
+    formPath = formPath,
+    rootPath = rootPath,
     dev = dev,
+
     toHex = toHex,
     printHex = printHex,
+
     getBasePointer = getBasePointer,
     getStackPointer = getStackPointer,
     getPointerSize = getPointerSize,
+
+    insertMenuItemInSection = insertMenuItemInSection,
+    findItemWithCaption = findItemWithCaption,
+
     padLeft = padLeft,
     padRight = padRight,
-    cwd = cwd,
-    formPath = formPath,
-    rootPath = rootPath
 }

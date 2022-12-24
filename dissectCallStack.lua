@@ -12,23 +12,6 @@ local formPath = common.formPath
 --- Form Helpers ---
 --------------------
 
-local function findSection(menu, n)
-    local i = 0
-    local count = 0
-    while true do
-        if count == n then return i end
-        -- Items with caption "-" are treated as dividers.
-        if menu.Items[i].Caption == "-" then
-            count = count + 1
-        end
-        i = i + 1
-    end
-end
-
-local function insertInSection(menu, sectionIndex, offset, menuItem)
-    menu.Items.insert(findSection(menu, sectionIndex) + offset, menuItem)
-end
-
 local function addStructAddress(structForm, address)
     local column = structForm.addColumn()
     column.AddressText = toHex(address)
@@ -40,13 +23,19 @@ end
 
 function module.applyExtension()
     local mv = getMemoryViewForm()
-    local mi = createMenuItem(mv.Menu)
-    mi.Caption = "Dissect call stack"
-    mi.Shortcut = 'Ctrl+Shift+K'
-    mi.ImageIndex = 64 -- Stack Debug Icon
+
+    local caption = "Dissect call stack"
+    local mi = common.findItemWithCaption(mv.debuggerpopup, caption)
+    if not mi then
+        mi = createMenuItem(mv.Menu)
+        mi.Caption = caption
+        mi.Shortcut = 'Ctrl+Shift+K'
+        mi.ImageIndex = 64 -- Stack Debug Icon
+        -- Insert at the end of section 2.
+        common.insertMenuItemInSection(mv.debuggerpopup, 3, -1, mi)
+    end
     mi.OnClick = module.createSession
-    -- Insert at the end of section 2.
-    insertInSection(mv.debuggerpopup, 3, -1, mi)
+
 end
 
 function module.createSession()
