@@ -47,6 +47,7 @@
         "readPointer",
         "disassemble",
         "splitDisassembledString",
-        "GetTickCount"
+        "GetTickCount",
+        "getAddress"
     ]
 }
