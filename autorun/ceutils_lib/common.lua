@@ -21,7 +21,7 @@ if dev then
 else
     rootPath = getAutoRunPath() .. pathsep
 end
-local formPath = rootPath .. pathsep .. "ceutils_lib" .. pathsep .. 'forms' .. pathsep
+local formPath = rootPath .. "autorun" .. pathsep .. "ceutils_lib" .. pathsep .. 'forms' .. pathsep
 
 ----------------------------------------------------------
 
