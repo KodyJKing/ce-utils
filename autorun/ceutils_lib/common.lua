@@ -12,7 +12,8 @@ else
 end
 
 local _cwd = cwd()
-local dev = not not string.find(_cwd, "ce-utils")
+-- print("Running ce-utils from", _cwd)
+local dev = not not string.find(_cwd, "ce%-utils")
 if dev then print("Running CE-Utils in dev mode.") end
 local rootPath
 if dev then
