@@ -1,3 +1,5 @@
+-- local json = require("autorun.ceutils_lib.json")
+
 package.loaded["autorun.ceutils_lib.common"] = nil
 local common = require("autorun.ceutils_lib.common")
 
@@ -14,7 +16,7 @@ local functional = require("autorun.ceutils_lib.functional")
 local toHex = common.toHex
 
 function pad(x)
-    return common.padLeft(toHex(x), 8, "0")
+    return common.padLeft(toHex(x), common.getPointerSize() * 2, "0")
 end
 
 --------------------------------------------------------------
@@ -89,10 +91,9 @@ local function getSubItemUnderMouse(listView, numColumns)
     local listItem = listView.getItemAt(x, y)
     if not listItem then return end
 
-    local columns = listView.Columns
-    for i = 0, numColumns - 1 do
-        x = x - columns[i].Width
-        if x < 0 then
+    for i = 1, numColumns - 1 do
+        rect = listItem.displayRectSubItem(i, 0)
+        if x > rect.Left and x < rect.Right then
             return listItem, i
         end
     end
@@ -131,6 +132,7 @@ function createCallChainLogForm(initialAddress)
 
     local attatchedAddress = nil
     local callChainRecords = {}
+    local selectedAddressString = nil
 
     function getBreakAddress() return tonumber("0x" .. addressInput.Text) end
 
@@ -184,12 +186,37 @@ function createCallChainLogForm(initialAddress)
         local record = callChainRecords[lines] or { count = 0 }
         record.count = record.count + 1
 
+        listView.beginUpdate()
         if record.count == 1 then
             callChainRecords[lines] = record
             record.item = listView.Items.Add()
             record.item.SubItems.text = lines
         end
         record.item.Caption = tostring(record.count)
+        listView.endUpdate()
+    end
+
+    function hardRefreshListView()
+        listView.beginUpdate()
+        for i = 0, listView.Items.Count - 1 do
+            local item = listView.Items[i]
+            item.SubItems.text = item.SubItems.text
+        end
+        listView.endUpdate()
+    end
+
+    function refreshSubItems(text, oldText)
+        listView.beginUpdate()
+        for i = 0, listView.Items.Count - 1 do
+            local subItems = listView.Items[i].SubItems
+            for j = 0, subItems.Count - 1 do
+                local curText = subItems.getString(j)
+                if curText == text or curText == oldText then
+                    subItems.setString(j, curText)
+                end
+            end
+        end
+        listView.endUpdate()
     end
 
     -----------
@@ -201,17 +228,34 @@ function createCallChainLogForm(initialAddress)
     end
 
     listView.OnClick = function(...)
+        local old_selectedAddressString = selectedAddressString
+        selectedAddressString = nil
+
         local numColumns = 2 + NUM_CALLER_COLUMNS
         local item, colIndex = getSubItemUnderMouse(listView, numColumns)
 
-        if item == nil or colIndex <= 0 then return end
+        if item ~= nil and colIndex > 0 then
+            selectedAddressString = item.SubItems[colIndex - 1]
+            local address = tonumber("0x" .. selectedAddressString)
 
-        local addressString = item.SubItems[colIndex - 1]
-        local address = tonumber("0x" .. addressString)
+            local memForm = getMemoryViewForm()
+            memForm.visible = true
+            memForm.DisassemblerView.selectedAddress = address
+        end
 
-        local memForm = getMemoryViewForm()
-        memForm.visible = true
-        memForm.DisassemblerView.selectedAddress = address
+        refreshSubItems(selectedAddressString, old_selectedAddressString)
+    end
+
+    listView.OnCustomDrawSubItem = function(sender, item, subItem, state)
+        local count = item.SubItems.Count
+        local index = subItem - 1
+        if index >= 0 and index < count then
+            local text = item.SubItems.getString(index)
+            if text == selectedAddressString then
+                listView.Canvas.Font.Color = 0x4040ff
+            end
+        end
+        return true
     end
 
     -----------
