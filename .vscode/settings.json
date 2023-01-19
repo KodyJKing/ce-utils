@@ -49,6 +49,9 @@
         "splitDisassembledString",
         "GetTickCount",
         "getAddress",
-        "getMousePos"
+        "getMousePos",
+        "getCheatEngineDir",
+        "getFormCount",
+        "getForm"
     ]
 }

@@ -7,29 +7,27 @@
   <CheatEntries/>
   <CheatCodes>
     <CodeEntry>
-      <Description>Damage Entity</Description>
-      <AddressString>halo.exe+EF49F</AddressString>
+      <Description>Foo</Description>
+      <AddressString>mcc-win64-shipping.exe+2669193</AddressString>
       <Before>
-        <Byte>00</Byte>
-        <Byte>D8</Byte>
-        <Byte>64</Byte>
+        <Byte>89</Byte>
+        <Byte>74</Byte>
         <Byte>24</Byte>
-        <Byte>48</Byte>
+        <Byte>18</Byte>
+        <Byte>57</Byte>
       </Before>
       <Actual>
-        <Byte>D9</Byte>
-        <Byte>9E</Byte>
-        <Byte>E0</Byte>
-        <Byte>00</Byte>
-        <Byte>00</Byte>
-        <Byte>00</Byte>
+        <Byte>48</Byte>
+        <Byte>83</Byte>
+        <Byte>EC</Byte>
+        <Byte>10</Byte>
       </Actual>
       <After>
-        <Byte>EB</Byte>
-        <Byte>0B</Byte>
-        <Byte>80</Byte>
-        <Byte>7C</Byte>
-        <Byte>24</Byte>
+        <Byte>33</Byte>
+        <Byte>C0</Byte>
+        <Byte>C7</Byte>
+        <Byte>05</Byte>
+        <Byte>61</Byte>
       </After>
     </CodeEntry>
   </CheatCodes>
@@ -81,7 +79,7 @@
         <Element Offset="448" Vartype="Double" Bytesize="8" OffsetHex="000001C0" DisplayMethod="Unsigned Integer"/>
         <Element Offset="456" Vartype="Float" Bytesize="4" RLECount="8" OffsetHex="000001C8" DisplayMethod="Unsigned Integer"/>
         <Element Offset="488" Vartype="4 Bytes" Bytesize="4" OffsetHex="000001E8" DisplayMethod="Hexadecimal"/>
-        <Element Offset="492" Vartype="Pointer" Bytesize="4" OffsetHex="000001EC" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="492" Vartype="Pointer" Bytesize="8" OffsetHex="000001EC" DisplayMethod="Unsigned Integer"/>
         <Element Offset="496" Vartype="4 Bytes" Bytesize="4" OffsetHex="000001F0" DisplayMethod="Hexadecimal"/>
         <Element Offset="500" Vartype="4 Bytes" Bytesize="4" RLECount="6" OffsetHex="000001F4" DisplayMethod="Unsigned Integer"/>
         <Element Offset="524" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000020C" DisplayMethod="Hexadecimal"/>
@@ -95,9 +93,9 @@
         <Element Offset="592" Vartype="Double" Bytesize="8" OffsetHex="00000250" DisplayMethod="Unsigned Integer"/>
         <Element Offset="600" Vartype="Float" Bytesize="4" RLECount="5" OffsetHex="00000258" DisplayMethod="Unsigned Integer"/>
         <Element Offset="620" Vartype="4 Bytes" Bytesize="4" RLECount="8" OffsetHex="0000026C" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="652" Vartype="Pointer" Bytesize="4" OffsetHex="0000028C" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="652" Vartype="Pointer" Bytesize="8" OffsetHex="0000028C" DisplayMethod="Unsigned Integer"/>
         <Element Offset="656" Vartype="4 Bytes" Bytesize="4" RLECount="2" OffsetHex="00000290" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="664" Vartype="Pointer" Bytesize="4" OffsetHex="00000298" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="664" Vartype="Pointer" Bytesize="8" OffsetHex="00000298" DisplayMethod="Unsigned Integer"/>
         <Element Offset="668" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000029C" DisplayMethod="Hexadecimal"/>
         <Element Offset="672" Vartype="4 Bytes" Bytesize="4" OffsetHex="000002A0" DisplayMethod="Unsigned Integer"/>
         <Element Offset="676" Vartype="4 Bytes" Bytesize="4" RLECount="4" OffsetHex="000002A4" DisplayMethod="Hexadecimal"/>
@@ -110,7 +108,8 @@
         <Element Offset="756" Vartype="4 Bytes" Bytesize="4" OffsetHex="000002F4" DisplayMethod="Unsigned Integer"/>
         <Element Offset="760" Vartype="4 Bytes" Bytesize="4" RLECount="2" OffsetHex="000002F8" DisplayMethod="Hexadecimal"/>
         <Element Offset="768" Vartype="4 Bytes" Bytesize="4" RLECount="7" OffsetHex="00000300" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="796" Vartype="Pointer" Bytesize="4" RLECount="2" OffsetHex="0000031C" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="796" Vartype="Pointer" Bytesize="8" OffsetHex="0000031C" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="800" Vartype="Pointer" Bytesize="8" OffsetHex="00000320" DisplayMethod="Unsigned Integer"/>
         <Element Offset="804" Vartype="4 Bytes" Bytesize="4" RLECount="2" OffsetHex="00000324" DisplayMethod="Unsigned Integer"/>
         <Element Offset="812" Vartype="4 Bytes" Bytesize="4" OffsetHex="0000032C" DisplayMethod="Hexadecimal"/>
         <Element Offset="816" Vartype="4 Bytes" Bytesize="4" RLECount="4" OffsetHex="00000330" DisplayMethod="Unsigned Integer"/>
@@ -310,7 +309,7 @@
         <Element Offset="3564" Vartype="String" Bytesize="4" OffsetHex="00000DEC" DisplayMethod="Unsigned Integer"/>
         <Element Offset="3568" Vartype="Double" Bytesize="8" OffsetHex="00000DF0" DisplayMethod="Unsigned Integer"/>
         <Element Offset="3576" Vartype="Float" Bytesize="4" OffsetHex="00000DF8" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="3580" Vartype="Pointer" Bytesize="4" OffsetHex="00000DFC" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="3580" Vartype="Pointer" Bytesize="8" OffsetHex="00000DFC" DisplayMethod="Unsigned Integer"/>
         <Element Offset="3584" Vartype="String" Bytesize="4" OffsetHex="00000E00" DisplayMethod="Unsigned Integer"/>
         <Element Offset="3588" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000E04" DisplayMethod="Hexadecimal"/>
         <Element Offset="3592" Vartype="4 Bytes" Bytesize="4" RLECount="3" OffsetHex="00000E08" DisplayMethod="Unsigned Integer"/>
@@ -329,7 +328,7 @@
         <Element Offset="3788" Vartype="4 Bytes" Bytesize="4" RLECount="2" OffsetHex="00000ECC" DisplayMethod="Unsigned Integer"/>
         <Element Offset="3796" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000ED4" DisplayMethod="Hexadecimal"/>
         <Element Offset="3800" Vartype="4 Bytes" Bytesize="4" RLECount="19" OffsetHex="00000ED8" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="3876" Vartype="Pointer" Bytesize="4" OffsetHex="00000F24" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="3876" Vartype="Pointer" Bytesize="8" OffsetHex="00000F24" DisplayMethod="Unsigned Integer"/>
         <Element Offset="3880" Vartype="Double" Bytesize="8" RLECount="2" OffsetHex="00000F28" DisplayMethod="Unsigned Integer"/>
         <Element Offset="3896" Vartype="Float" Bytesize="4" OffsetHex="00000F38" DisplayMethod="Unsigned Integer"/>
         <Element Offset="3900" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000F3C" DisplayMethod="Unsigned Integer"/>
@@ -345,5 +344,30 @@
     </Structure>
   </Structures>
   <LuaScript>dofile("autorun/ceutils.lua")
+
+function findFormByCaption(caption)
+    for i = 0, getFormCount() - 1 do
+        local form = getForm(i)
+        if form.Caption == caption then
+            return form
+        end
+    end
+    return nil
+end
+
+function listForms()
+    for i = 0, getFormCount() - 1 do
+        print(getForm(i).Caption)
+    end
+end
+
+function printComponentTree(comp, dent)
+    dent = dent or ""
+    print(dent .. comp.ClassName .. ": " .. comp.Name)
+    for i = 0, comp.getComponentCount() - 1 do
+        local subComp = comp.getComponent(i)
+        printComponent(subComp, dent .. "    ")
+    end
+end
 </LuaScript>
 </CheatTable>

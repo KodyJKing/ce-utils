@@ -12,16 +12,21 @@ else
 end
 
 local _cwd = cwd()
--- print("Running ce-utils from", _cwd)
 local dev = not not string.find(_cwd, "ce%-utils")
 if dev then print("Running CE-Utils in dev mode.") end
+
 local rootPath
 if dev then
     rootPath = cwd() .. pathsep
 else
-    rootPath = getAutoRunPath() .. pathsep
+    -- rootPath = getAutoRunPath() .. pathsep
+    rootPath = getCheatEngineDir()
 end
 local formPath = rootPath .. "autorun" .. pathsep .. "ceutils_lib" .. pathsep .. 'forms' .. pathsep
+
+-- print("Root Path =", rootPath)
+-- print("Form Path =", formPath)
+-- print("")
 
 ----------------------------------------------------------
 
@@ -66,6 +71,22 @@ local function findItemWithCaption(menu, caption)
     end
 end
 
+function findFormByCaption(caption)
+    for i = 0, getFormCount() - 1 do
+        local form = getForm(i)
+        if form.Caption == caption then
+            return form
+        end
+    end
+    return nil
+end
+
+function listForms()
+    for i = 0, getFormCount() - 1 do
+        print(getForm(i).Caption)
+    end
+end
+
 ----------------------------------------------------------
 
 local function getBasePointer()
@@ -98,6 +119,8 @@ return {
 
     insertMenuItemInSection = insertMenuItemInSection,
     findItemWithCaption = findItemWithCaption,
+    findFormByCaption = findFormByCaption,
+    listForms = listForms,
 
     padLeft = padLeft,
     padRight = padRight,

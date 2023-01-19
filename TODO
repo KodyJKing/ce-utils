@@ -1,0 +1,3 @@
+- Make call chain logger filter out return address candidates that are not preceeded by a call to the current function.
+    - See how cheat engine determines the bounds of the current function. Will probably need agressive caching to be efficient.
+- Try using getRTTIClassName in dissect call stack.
