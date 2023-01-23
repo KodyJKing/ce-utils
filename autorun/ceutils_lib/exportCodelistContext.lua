@@ -56,8 +56,6 @@ local function printCodeEntry(item, printLine)
     printInstructionContext(address, function(line) printLine("    " .. line) end)
 end
 
-print("")
-
 local function printCodelistContext(printLine)
     local items = lvCodelist.Items
     for i = 0, items.Count - 1 do

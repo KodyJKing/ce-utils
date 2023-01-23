@@ -30,28 +30,6 @@
         <Byte>61</Byte>
       </After>
     </CodeEntry>
-    <CodeEntry>
-      <Description>Bar</Description>
-      <AddressString>mcc-win64-shipping.exe+26691CA</AddressString>
-      <Before>
-        <Byte>6E</Byte>
-        <Byte>75</Byte>
-        <Byte>44</Byte>
-        <Byte>8B</Byte>
-        <Byte>D2</Byte>
-      </Before>
-      <Actual>
-        <Byte>8B</Byte>
-        <Byte>F0</Byte>
-      </Actual>
-      <After>
-        <Byte>33</Byte>
-        <Byte>C9</Byte>
-        <Byte>8D</Byte>
-        <Byte>47</Byte>
-        <Byte>01</Byte>
-      </After>
-    </CodeEntry>
   </CheatCodes>
   <UserdefinedSymbols/>
   <Structures StructVersion="2">
