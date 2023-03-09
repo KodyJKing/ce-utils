@@ -55,6 +55,14 @@
         "getForm",
         "readBytes",
         "createOpenDialog",
-        "getMainForm"
+        "getMainForm",
+        "findWindow",
+        "createForm",
+        "sleep",
+        "createThread",
+        "getOpenedProcessID",
+        "getWindowlist",
+        "getWindowProcessID",
+        "getWindowCaption"
     ]
 }

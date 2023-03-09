@@ -6,32 +6,43 @@ local module = {}
 
 function module.cwd() return io.popen "cd":read '*l' end
 
-local pathsep
-if getOperatingSystem() == 0 then
-    pathsep = [[\]]
-else
-    pathsep = [[/]]
+if not module.initialized then
+    local pathsep
+    if getOperatingSystem() == 0 then
+        pathsep = [[\]]
+    else
+        pathsep = [[/]]
+    end
+
+    local _cwd = module.cwd()
+    local dev = not not string.find(_cwd, "ce%-utils")
+    if dev then print("Running CE-Utils in dev mode.") end
+
+    local rootPath
+    if dev then
+        rootPath = module.cwd() .. pathsep
+    else
+        -- rootPath = getAutoRunPath() .. pathsep
+        rootPath = getCheatEngineDir()
+    end
+
+    module.formPath = rootPath .. "autorun" .. pathsep .. "ceutils_lib" .. pathsep .. 'forms' .. pathsep
+    module.rootPath = rootPath
+    module.dev = dev
+
+    -- print("Root Path =", rootPath)
+    -- print("Form Path =", formPath)
+    -- print("")
+
+    module.initialized = true
 end
 
-local _cwd = module.cwd()
-local dev = not not string.find(_cwd, "ce%-utils")
-if dev then print("Running CE-Utils in dev mode.") end
+----------------------------------------------------------
 
-local rootPath
-if dev then
-    rootPath = module.cwd() .. pathsep
-else
-    -- rootPath = getAutoRunPath() .. pathsep
-    rootPath = getCheatEngineDir()
+function module.reloadPackage(path)
+    package.loaded[path] = nil
+    return require(path)
 end
-
-module.formPath = rootPath .. "autorun" .. pathsep .. "ceutils_lib" .. pathsep .. 'forms' .. pathsep
-module.rootPath = rootPath
-module.dev = dev
-
--- print("Root Path =", rootPath)
--- print("Form Path =", formPath)
--- print("")
 
 ----------------------------------------------------------
 
@@ -179,6 +190,18 @@ function module.getPointerSize()
     if targetIs64Bit() then return 8 end
     return 4
 end
+
+function module.readLong(memStream)
+    if targetIs64Bit() then return memStream.readQword() end
+    return memStream.readDword()
+end
+
+function module.writeLong(memStream, num)
+    if targetIs64Bit() then memStream.writeQword(num) end
+    memStream.writeDword(num)
+end
+
+module.getLongSize = module.getPointerSize
 
 ----------------------------------------------------------
 
