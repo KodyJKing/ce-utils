@@ -125,6 +125,17 @@ function Overlay.create(hwndOrCaptionOrClassnameOrNil)
     overlay.pen = f.Canvas.Pen
     overlay.screenRect = Overlay.getWindowRect(hwnd)
 
+    local c = overlay.canvas
+    c.Font.Name = "Consolas"
+    c.Font.Size = 16
+    c.Font.Color = 0x00FF00
+    c.Font.Style = "fsBold"
+    c.Font.Quality = "fqNonAntialiased"
+
+    function overlay.setOpacity(byteOpacity)
+        overlay.form.setLayeredAttributes(0xFF, byteOpacity, 3)
+    end
+
     function overlay.updatePosition()
         local rect = overlay.screenRect
         if rect then
@@ -141,7 +152,7 @@ function Overlay.create(hwndOrCaptionOrClassnameOrNil)
         overlay.canvas.Clear()
     end
 
-    overlay.destroy = function()
+    function overlay.destroy()
         f.destroy()
     end
 

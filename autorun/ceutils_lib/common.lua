@@ -16,7 +16,7 @@ if not module.initialized then
 
     local _cwd = module.cwd()
     local dev = not not string.find(_cwd, "ce%-utils")
-    if dev then print("Running CE-Utils in dev mode.") end
+    -- if dev then print("Running CE-Utils in dev mode.") end
 
     local rootPath
     if dev then

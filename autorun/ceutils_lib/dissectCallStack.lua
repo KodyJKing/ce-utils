@@ -35,7 +35,6 @@ function module.applyExtension()
         common.insertMenuItemInSection(mv.debuggerpopup, 3, -1, mi)
     end
     mi.OnClick = module.createSession
-
 end
 
 function module.createSession()

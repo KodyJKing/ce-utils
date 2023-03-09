@@ -62,6 +62,19 @@ function module.print(a) print(module.toString(a)) end
 
 function module.print3(a) print(module.toString3(a)) end
 
+------------
+-- Memory --
+------------
+
+function module.readVec3(address, outVec)
+    return module.vector(
+        readFloat(address + 0x00),
+        readFloat(address + 0x04),
+        readFloat(address + 0x08),
+        0, outVec
+    )
+end
+
 --------------------------------
 -- Clipping and plane testing --
 --------------------------------
@@ -127,6 +140,7 @@ function module.project3D(point, camPos, camForward, up, verticalFov, screenWidt
     return module.project3DFunction(camPos, camForward, up, verticalFov, screenWidth, screenHeight)(point, outVec)
 end
 
+----------------
 ----------------
 
 return module
