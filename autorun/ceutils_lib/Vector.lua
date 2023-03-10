@@ -4,7 +4,7 @@ function module.vector(x, y, z, w, outVec)
     z = z or 0
     w = w or 0
     if not outVec then
-        print("Vector allocated")
+        -- print("Vector allocated")
         return { x = x, y = y, z = z, w = w }
     end
     outVec.x = x
@@ -44,9 +44,9 @@ function module.scale(a, b, outVec) return module.vector(a.x * b, a.y * b, a.z *
 
 function module.div(a, b, outVec) return module.vector(a.x / b, a.y / b, a.z / b, a.w / b, outVec) end
 
-function module.length(a, b) return math.sqrt(a.x * a.x + a.y * a.y + a.z * a.z + a.w * a.w) end
+function module.length(a) return math.sqrt(a.x * a.x + a.y * a.y + a.z * a.z + a.w * a.w) end
 
-function module.length3(a, b) return math.sqrt(a.x * a.x + a.y * a.y + a.z * a.z) end
+function module.length3(a) return math.sqrt(a.x * a.x + a.y * a.y + a.z * a.z) end
 
 function module.lengthSquared3(a, b) return a.x * a.x + a.y * a.y + a.z * a.z end
 
@@ -59,6 +59,13 @@ function module.cross(a, b, outVec)
         a.x * b.y - a.y * b.x,
         0, outVec
     )
+end
+
+function module.normalize3(a)
+    local invLen = 1 / module.length3(a)
+    a.x = a.x * invLen
+    a.y = a.y * invLen
+    a.z = a.z * invLen
 end
 
 -------------
@@ -120,11 +127,9 @@ function module.clipLine(a, b, planePoint, planeNormal)
 
     local t = (pn - an) / abn
 
-    if ah < 0 then
-        module.add(a, module.scale(clipLine_ab, t, clipLine_abt), a)
-    else
-        module.add(a, module.scale(clipLine_ab, t, clipLine_abt), b)
-    end
+    local pointToClip
+    if ah < 0 then pointToClip = a else pointToClip = b end
+    module.add(a, module.scale(clipLine_ab, t, clipLine_abt), pointToClip)
 
     return true
 end
@@ -139,6 +144,9 @@ local toPoint = module.vector(0, 0, 0)
 function module.project3DFunction(camPos, camForward, up, verticalFov, screenWidth, screenHeight)
     camRight = module.cross(camForward, up, camRight)
     camUp = module.cross(camRight, camForward, camUp)
+
+    module.normalize3(camRight)
+    module.normalize3(camUp)
 
     local frustumVerticalSlope = math.tan(verticalFov / 2)
 

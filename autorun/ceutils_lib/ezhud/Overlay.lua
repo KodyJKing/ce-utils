@@ -109,6 +109,8 @@ end
 function Overlay.create(hwndOrCaptionOrClassnameOrNil)
     local overlay = {}
 
+    ---------------------------------------------------
+
     local hwnd
     local argType = type(hwndOrCaptionOrClassnameOrNil)
     if argType == "nil" then
@@ -125,20 +127,27 @@ function Overlay.create(hwndOrCaptionOrClassnameOrNil)
         print("Invalid argument for Overlay window.")
     end
 
-    local f = getOverlayForm()
-    local c = f.canvas
+    ---------------------------------------------------
+
+    local form = getOverlayForm()
+    local backBuffer = createBitmap(100, 100)
+    local canvas = backBuffer.Canvas
 
     overlay.hwnd = hwnd
-    overlay.form = f
-    overlay.canvas = f.Canvas
-    overlay.pen = f.Canvas.Pen
+    overlay.form = form
+    overlay.backBuffer = backBuffer
+    overlay.canvas = canvas
+    overlay.pen = canvas.Pen
     overlay.targetWindowVisible = false
 
-    c.Font.Name = "Consolas"
-    c.Font.Size = 64
-    c.Font.Color = 0x00FF00
-    c.Font.Style = "fsBold"
-    c.Font.Quality = "fqNonAntialiased"
+    local font = backBuffer.Canvas.Font
+    font.Name = "Consolas"
+    font.Size = 16
+    font.Color = 0xFFFFFF
+    font.Style = "fsBold"
+    font.Quality = "fqNonAntialiased"
+
+    ---------------------------------------------------
 
     function overlay.setOpacity(byteOpacity)
         overlay.form.setLayeredAttributes(0xFF, byteOpacity, 3)
@@ -150,21 +159,52 @@ function Overlay.create(hwndOrCaptionOrClassnameOrNil)
         local rect = screenRect
         overlay.targetWindowVisible = rect ~= nil
         if rect then
-            f.Left = rect.left
-            f.Top = rect.top
-            f.Width = rect.right - rect.left
-            f.Height = rect.bottom - rect.top
+            form.Left = rect.left
+            form.Top = rect.top
+            form.Width = rect.right - rect.left
+            form.Height = rect.bottom - rect.top
+
+            backBuffer.Width = form.Width
+            backBuffer.Height = form.Height
         end
     end
 
     function overlay.begin()
         overlay.updatePosition()
-        overlay.canvas.Clear()
+        overlay.canvas.Brush.Color = 0x0000FF
+        overlay.canvas.fillRect(0, 0, form.Width, form.Height)
+    end
+
+    function overlay.present()
+        overlay.form.Canvas.copyRect(
+            0, 0, form.Width, form.Height,
+            overlay.backBuffer.Canvas,
+            0, 0, form.Width, form.Height
+        )
     end
 
     function overlay.destroy()
-        f.destroy()
+        form.destroy()
+        backBuffer.destroy()
     end
+
+    function overlay.text(x, y, text, size, color, alignX, alignY)
+        alignX = alignX or 0
+        alignY = alignY or 0
+        font.Size = size
+        font.Color = color
+
+        local w = canvas.getTextWidth(text)
+        local h = canvas.getTextHeight(text)
+
+        local _x = math.floor(x - w / 2 * (1 - alignX))
+        local _y = math.floor(y - h / 2 * (1 - alignY))
+        canvas.textOut(_x, _y, text)
+
+        return _x, _y, w, h
+    end
+
+    ---------------------------------------------------
 
     overlay.updatePosition()
 

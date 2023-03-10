@@ -68,6 +68,7 @@
         "readFloat",
         "createFont",
         "createTimer",
-        "allocateMemory"
+        "allocateMemory",
+        "createBitmap"
     ]
 }
