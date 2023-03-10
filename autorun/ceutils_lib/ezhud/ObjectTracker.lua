@@ -1,7 +1,8 @@
 local common = require("autorun.ceutils_lib.common")
 local json = require("autorun.ceutils_lib.json")
-
 local Vector = common.reloadPackage("autorun.ceutils_lib.Vector")
+
+local toHex = common.toHex
 
 local module = {}
 
@@ -41,13 +42,17 @@ function module.create()
         end
     end
 
+    local selectedObject
+    local selectedObjectDist
+    local maxSelectDist = 100
+    local renderDistance = 20
+    --
     local render_posProj = Vector.vector3(0, 0, 0)
     function tracker.render(hud)
         local entries = {}
 
-        local selectedObject
-        local selectedObjectDist = 1e+9
-        local maxSelectDist = 50
+        selectedObjectDist = 1e+9
+        selectedObject = nil
 
         local cam = hud.camera
         tracker.foreach(function(object)
@@ -55,12 +60,20 @@ function module.create()
             local depth = Vector.heightAbovePlane(pos, cam.pos, cam.forward)
 
             if depth < 0 then return end
+            if Vector.distance3(pos, cam.pos) > renderDistance then return end
 
             hud.project3DFunction(pos, render_posProj)
             local x = render_posProj.x
             local y = render_posProj.y
-            local dx = x - hud.form.Width / 2
-            local dy = y - hud.form.Height / 2
+
+            local screenWidth = hud.form.Width
+            local screenHeight = hud.form.Height
+            if x < 0 or x > screenWidth or y < 0 or y > screenHeight then
+                return
+            end
+
+            local dx = x - screenWidth / 2
+            local dy = y - screenHeight / 2
             local centerDistSq = math.sqrt(dx * dx + dy * dy)
 
             if centerDistSq < selectedObjectDist and centerDistSq < maxSelectDist then
@@ -76,16 +89,49 @@ function module.create()
 
         for i, entry in ipairs(entries) do
             local object = entry.object
-            local color = getProperty(object, "color") or 0x00FF00
+            local color = getProperty(object, "color") or 0xFFFFFF
             local address = getProperty(object, "address")
+            local fontSize = 6
 
             local selected = object == selectedObject
             if selected then
                 color = 0x00FFFF
+                fontSize = 16
             end
 
-            hud.overlay.text(entry.x, entry.y, tostring(address), 16, color, 0, 0)
+            local hex = toHex(object.address)
+            hud.overlay.text(entry.x, entry.y, hex, fontSize, color, 0, 0)
         end
+    end
+
+    local function hasSelectedAddress() return selectedObject and selectedObject.address end
+
+    local printHotkey = createHotkey(function()
+        if not hasSelectedAddress() then return end
+        local hex = toHex(selectedObject.address)
+        writeToClipboard(hex)
+        print(hex)
+    end, VK_SNAPSHOT)
+
+    local structForm
+    local dissectHotkey = createHotkey(function()
+        if not hasSelectedAddress() then return end
+        local address = selectedObject.address
+        if not structForm then
+            structForm = createStructureForm(toHex(address))
+            structForm.OnClose = function()
+                structForm.OnClose = nil
+                structForm.close()
+                structForm = nil
+            end
+        else
+            common.addStructAddress(structForm, address)
+        end
+    end, VK_APPS)
+
+    function tracker.destroy()
+        printHotkey.destroy()
+        dissectHotkey.destroy()
     end
 
     return tracker

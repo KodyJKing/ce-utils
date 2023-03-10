@@ -50,6 +50,13 @@ function module.length3(a) return math.sqrt(a.x * a.x + a.y * a.y + a.z * a.z) e
 
 function module.lengthSquared3(a, b) return a.x * a.x + a.y * a.y + a.z * a.z end
 
+function module.distance3(a, b)
+    local dx = b.x - a.x
+    local dy = b.y - a.y
+    local dz = b.z - a.z
+    return math.sqrt(dx * dx + dy * dy + dz * dz)
+end
+
 function module.unit3(a) return module.div(a, module.length3(a)) end
 
 function module.cross(a, b, outVec)

@@ -174,6 +174,11 @@ function module.printComponentTree(comp, prefix, dent, visited)
     end
 end
 
+function module.addStructAddress(structForm, address)
+    local column = structForm.addColumn()
+    column.AddressText = module.toHex(address)
+end
+
 ----------------------------------------------------------
 
 function module.getBasePointer()

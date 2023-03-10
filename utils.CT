@@ -22,7 +22,7 @@
             <CheatEntry>
               <ID>4</ID>
               <Description>"Instant Regen"</Description>
-              <LastState/>
+              <LastState Activated="1"/>
               <VariableType>Auto Assembler Script</VariableType>
               <AssemblerScript>{ Game   : MCC-Win64-Shipping.exe
   Version: 
@@ -436,63 +436,63 @@ createTimer(1, function() memrec.Active = false end)
                     <CheatEntry>
                       <ID>35</ID>
                       <Description>"pos.x"</Description>
-                      <LastState Value="29.00154877" RealAddress="7FFD16040D64"/>
+                      <LastState Value="28.95636368" RealAddress="7FFD16040D64"/>
                       <VariableType>Float</VariableType>
                       <Address>halo1.dll+2F00D64</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>36</ID>
                       <Description>"pos.y"</Description>
-                      <LastState Value="-17.09890366" RealAddress="7FFD16040D68"/>
+                      <LastState Value="-17.06991768" RealAddress="7FFD16040D68"/>
                       <VariableType>Float</VariableType>
                       <Address>halo1.dll+2F00D64+4</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>37</ID>
                       <Description>"pos.z"</Description>
-                      <LastState Value="89.87341309" RealAddress="7FFD16040D6C"/>
+                      <LastState Value="89.87476349" RealAddress="7FFD16040D6C"/>
                       <VariableType>Float</VariableType>
                       <Address>halo1.dll+2F00D64+8</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>28</ID>
                       <Description>"fwd.x"</Description>
-                      <LastState Value="0.1734309345" RealAddress="7FFD16040D84"/>
+                      <LastState Value="0.1499159336" RealAddress="7FFD16040D84"/>
                       <VariableType>Float</VariableType>
                       <Address>halo1.dll+2F00D64+20</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>29</ID>
                       <Description>"fwd.y"</Description>
-                      <LastState Value="-0.950522244" RealAddress="7FFD16040D88"/>
+                      <LastState Value="-0.9660407901" RealAddress="7FFD16040D88"/>
                       <VariableType>Float</VariableType>
                       <Address>halo1.dll+2F00D64+24</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>30</ID>
                       <Description>"fwd.z"</Description>
-                      <LastState Value="-0.2577387094" RealAddress="7FFD16040D8C"/>
+                      <LastState Value="-0.2104527503" RealAddress="7FFD16040D8C"/>
                       <VariableType>Float</VariableType>
                       <Address>halo1.dll+2F00D64+28</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>31</ID>
                       <Description>"up.x"</Description>
-                      <LastState Value="0.04626287147" RealAddress="7FFD16040D90"/>
+                      <LastState Value="0.03227300569" RealAddress="7FFD16040D90"/>
                       <VariableType>Float</VariableType>
                       <Address>halo1.dll+2F00D64+2C</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>32</ID>
                       <Description>"up.y"</Description>
-                      <LastState Value="-0.2535527349" RealAddress="7FFD16040D94"/>
+                      <LastState Value="-0.2079634815" RealAddress="7FFD16040D94"/>
                       <VariableType>Float</VariableType>
                       <Address>halo1.dll+2F00D64+30</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>33</ID>
                       <Description>"up.z"</Description>
-                      <LastState Value="0.9662147164" RealAddress="7FFD16040D98"/>
+                      <LastState Value="0.9776040316" RealAddress="7FFD16040D98"/>
                       <VariableType>Float</VariableType>
                       <Address>halo1.dll+2F00D64+34</Address>
                     </CheatEntry>
@@ -663,13 +663,14 @@ dealloc(newmem)
         <CheatEntry>
           <ID>61</ID>
           <Description>"ezhud"</Description>
+          <Options moAlwaysHideChildren="1" moManualExpandCollapse="1"/>
           <LastState Value="" RealAddress="00000000"/>
           <GroupHeader>1</GroupHeader>
           <CheatEntries>
             <CheatEntry>
               <ID>58</ID>
               <Description>"Test HUD"</Description>
-              <LastState Activated="1"/>
+              <LastState/>
               <VariableType>Auto Assembler Script</VariableType>
               <AssemblerScript>[ENABLE]
 {$lua}
@@ -680,54 +681,28 @@ local ObjectTracker = reloadPackage("autorun.ceutils_lib.ezhud.ObjectTracker")
 local Vector = reloadPackage("autorun.ceutils_lib.Vector")
 local vec = Vector.vector
 
-local origin = vec(23, -30, 90)
-local a = Vector.add(origin, vec(10, -5, 0))
-local b = Vector.add(origin, vec(10, 5, 0))
-
 tracker = ObjectTracker.create()
 
 function getEntityPosition(obj)
     return Vector.readVec3(obj.address + 0x5C)
 end
 
-local fovAdjust = 1.0671243653832
-local fovAdjustRate = 1.001
-
 myHud = HUD.create()
 myHud.overlay.setOpacity(64)
 myHud.form.OnPaint = function()
-
-    --[[
-    if isKeyPressed(VK_DELETE) then
-      fovAdjust = fovAdjust / fovAdjustRate
-      print(fovAdjust)
-    end
-    if isKeyPressed(VK_INSERT) then
-      fovAdjust = fovAdjust * fovAdjustRate
-      print(fovAdjust)
-    end
-    ]]--
-
     local cam = myHud.camera
+    local fovAdjust = 1.0671243653832
     Vector.readVec3(getAddress("halo1.dll+2F00D64") ,cam.pos)
     Vector.readVec3(getAddress("halo1.dll+2F00D64+20") ,cam.forward)
     cam.verticalFov = readFloat("halo1.dll+2F00D64+38") * fovAdjust
 
     myHud.begin()
-
-    --[[
-    myHud.line( a, b, 2, 0x00FF00)
-    myHud.text( a, "A", 16, 0x00FF00)
-    myHud.text( b, "B", 16, 0x00FF00)
-    ]]--
-
     tracker.render(myHud)
-
     myHud.present()
 end
 
 local timer = createTimer(myHud.form, false)
-timer.Interval = 1000 / 120
+timer.Interval = 1000 / 60
 timer.OnTimer = function() myHud.form.repaint() end
 timer.Enabled = true
 
@@ -741,6 +716,11 @@ if syntaxcheck then return end
 if myHud then
     myHud.destroy()
     myHud = nil
+end
+
+if tracker then
+    tracker.destroy()
+    tracker = nul
 end
 
 {$asm}
@@ -757,8 +737,8 @@ end
             </CheatEntry>
             <CheatEntry>
               <ID>59</ID>
-              <Description>"Track Entities"</Description>
-              <LastState Activated="1"/>
+              <Description>"Track Shielded Entities"</Description>
+              <LastState/>
               <VariableType>Auto Assembler Script</VariableType>
               <AssemblerScript>{ Game   : MCC-Win64-Shipping.exe
   Version: 
@@ -789,7 +769,7 @@ code:
         local obj = tracker.addObject(address, 60)
         obj.address = address
         obj.pos = getEntityPosition
-        obj.color = 0xFFFF00
+        obj.color = 0xFFFFFF
     end
 {$asm}
 
@@ -834,6 +814,85 @@ halo1.dll+C15870: B8 EF FF 00 00                 - mov eax,0000FFEF
 halo1.dll+C15875: C7 83 A0 00 00 00 00 00 40 40  - mov [rbx+000000A0],40400000
 halo1.dll+C1587F: 66 44 23 D8                    - and r11w,ax
 halo1.dll+C15883: 48 8B C3                       - mov rax,rbx
+}
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>65</ID>
+              <Description>"Track All Entities"</Description>
+              <LastState Activated="1"/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>{ Game   : MCC-Win64-Shipping.exe
+  Version: 
+  Date   : 2023-03-10
+  Author : Kody
+
+  This script does blah blah blah
+}
+
+[ENABLE]
+
+aobscanmodule(INJECT_trackEntities_1,halo1.dll,F2 0F 10 46 18 8B 46 44) // should be unique
+alloc(newmem,$1000,INJECT_trackEntities_1)
+
+label(code)
+label(return)
+
+newmem:
+
+code:
+  movsd xmm0,[rsi+18]
+
+{$luacode address=rsi}
+    if tracker then
+        local obj = tracker.addObject(address, 60)
+        obj.address = address
+        obj.pos = getEntityPosition
+        obj.color = 0xFFFFFF
+    end
+{$asm}
+
+  jmp return
+
+INJECT_trackEntities_1:
+  jmp newmem
+return:
+registersymbol(INJECT_trackEntities_1)
+
+[DISABLE]
+
+INJECT_trackEntities_1:
+  db F2 0F 10 46 18
+
+unregistersymbol(INJECT_trackEntities_1)
+dealloc(newmem)
+
+{
+// ORIGINAL CODE - INJECTION POINT: halo1.dll+B8A53E
+
+halo1.dll+B8A515: F3 0F 10 56 30        - movss xmm2,[rsi+30]
+halo1.dll+B8A51A: 44 0F 28 C5           - movaps xmm8,xmm5
+halo1.dll+B8A51E: F3 0F 10 7E 3C        - movss xmm7,[rsi+3C]
+halo1.dll+B8A523: 44 0F 28 CA           - movaps xmm9,xmm2
+halo1.dll+B8A527: 8B 46 20              - mov eax,[rsi+20]
+halo1.dll+B8A52A: F3 44 0F 59 46 38     - mulss xmm8,[rsi+38]
+halo1.dll+B8A530: 89 45 C8              - mov [rbp-38],eax
+halo1.dll+B8A533: 8B 46 38              - mov eax,[rsi+38]
+halo1.dll+B8A536: 0F 11 45 98           - movups [rbp-68],xmm0
+halo1.dll+B8A53A: 89 44 24 54           - mov [rsp+54],eax
+// ---------- INJECTING HERE ----------
+halo1.dll+B8A53E: F2 0F 10 46 18        - movsd xmm0,[rsi+18]
+// ---------- DONE INJECTING  ----------
+halo1.dll+B8A543: 8B 46 44              - mov eax,[rsi+44]
+halo1.dll+B8A546: F2 0F 11 45 C0        - movsd [rbp-40],xmm0
+halo1.dll+B8A54B: F2 0F 10 46 30        - movsd xmm0,[rsi+30]
+halo1.dll+B8A550: F2 0F 11 44 24 4C     - movsd [rsp+4C],xmm0
+halo1.dll+B8A556: 0F 11 4D A8           - movups [rbp-58],xmm1
+halo1.dll+B8A55A: C7 45 B8 00 00 00 00  - mov [rbp-48],00000000
+halo1.dll+B8A561: F3 0F 10 4E 44        - movss xmm1,[rsi+44]
+halo1.dll+B8A566: 0F 28 C1              - movaps xmm0,xmm1
+halo1.dll+B8A569: F3 44 0F 59 C9        - mulss xmm9,xmm1
+halo1.dll+B8A56E: C7 45 BC 00 00 80 3F  - mov [rbp-44],3F800000
 }
 </AssemblerScript>
             </CheatEntry>
@@ -995,6 +1054,53 @@ halo1.dll+C15883: 48 8B C3                       - mov rax,rbx
         <Byte>C3</Byte>
         <Byte>10</Byte>
         <Byte>74</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Read Health</Description>
+      <AddressString>halo1.dll+CB2947</AddressString>
+      <Before>
+        <Byte>37</Byte>
+        <Byte>74</Byte>
+        <Byte>01</Byte>
+        <Byte>00</Byte>
+        <Byte>00</Byte>
+      </Before>
+      <Actual>
+        <Byte>8B</Byte>
+        <Byte>00</Byte>
+      </Actual>
+      <After>
+        <Byte>89</Byte>
+        <Byte>84</Byte>
+        <Byte>37</Byte>
+        <Byte>80</Byte>
+        <Byte>01</Byte>
+      </After>
+    </CodeEntry>
+    <CodeEntry>
+      <Description>Read Entity X</Description>
+      <AddressString>halo1.dll+B8A53E</AddressString>
+      <Before>
+        <Byte>98</Byte>
+        <Byte>89</Byte>
+        <Byte>44</Byte>
+        <Byte>24</Byte>
+        <Byte>54</Byte>
+      </Before>
+      <Actual>
+        <Byte>F2</Byte>
+        <Byte>0F</Byte>
+        <Byte>10</Byte>
+        <Byte>46</Byte>
+        <Byte>18</Byte>
+      </Actual>
+      <After>
+        <Byte>8B</Byte>
+        <Byte>46</Byte>
+        <Byte>44</Byte>
+        <Byte>F2</Byte>
+        <Byte>0F</Byte>
       </After>
     </CodeEntry>
     <CodeEntry>
@@ -1165,8 +1271,8 @@ halo1.dll+C15883: 48 8B C3                       - mov rax,rbx
       <Elements>
         <Element Offset="0" Vartype="2 Bytes" Bytesize="2" OffsetHex="00000000" Description="tagID" DisplayMethod="Hexadecimal"/>
         <Element Offset="2" Vartype="2 Bytes" Bytesize="2" OffsetHex="00000002" DisplayMethod="Hexadecimal"/>
-        <Element Offset="4" Vartype="4 Bytes" Bytesize="4" RLECount="3" OffsetHex="00000004" DisplayMethod="Unsigned Integer"/>
-        <Element Offset="16" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000010" DisplayMethod="Hexadecimal"/>
+        <Element Offset="4" Vartype="4 Bytes" Bytesize="4" RLECount="2" OffsetHex="00000004" DisplayMethod="Unsigned Integer"/>
+        <Element Offset="12" Vartype="4 Bytes" Bytesize="4" RLECount="2" OffsetHex="0000000C" DisplayMethod="Hexadecimal"/>
         <Element Offset="20" Vartype="4 Bytes" Bytesize="4" OffsetHex="00000014" Description="ageMilis" DisplayMethod="Unsigned Integer"/>
         <Element Offset="24" Vartype="Float" Bytesize="4" OffsetHex="00000018" Description="pos.x" DisplayMethod="Unsigned Integer"/>
         <Element Offset="28" Vartype="Float" Bytesize="4" OffsetHex="0000001C" Description="pos.y" DisplayMethod="Unsigned Integer"/>

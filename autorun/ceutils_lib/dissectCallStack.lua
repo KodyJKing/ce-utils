@@ -8,15 +8,6 @@ local common = require("autorun.ceutils_lib.common")
 local toHex = common.toHex
 local formPath = common.formPath
 
---------------------
---- Form Helpers ---
---------------------
-
-local function addStructAddress(structForm, address)
-    local column = structForm.addColumn()
-    column.AddressText = toHex(address)
-end
-
 ------------
 -- Module --
 ------------
@@ -89,7 +80,7 @@ function module.createSession()
             if session.structForm == nil then
                 session.structForm = createStructureForm(toHex(resultPtr))
             else
-                addStructAddress(session.structForm, resultPtr)
+                common.addStructAddress(session.structForm, resultPtr)
             end
 
             if found >= session.maxCalls then

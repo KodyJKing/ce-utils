@@ -69,6 +69,13 @@
         "createFont",
         "createTimer",
         "allocateMemory",
-        "createBitmap"
+        "createBitmap",
+        "createHotkey",
+        "writeToClipboard",
+        "VK_RCONTROL",
+        "VK_PRINT",
+        "VK_SNAPSHOT",
+        "VK_MENU",
+        "VK_APPS"
     ]
 }
