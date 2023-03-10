@@ -130,17 +130,19 @@ function Overlay.create(hwndOrCaptionOrClassnameOrNil)
     ---------------------------------------------------
 
     local form = getOverlayForm()
-    local backBuffer = createBitmap(100, 100)
-    local canvas = backBuffer.Canvas
+    -- local backBuffer = createBitmap(100, 100)
+    -- local canvas = backBuffer.Canvas
+    local canvas = form.Canvas
 
     overlay.hwnd = hwnd
     overlay.form = form
-    overlay.backBuffer = backBuffer
+    -- overlay.backBuffer = backBuffer
     overlay.canvas = canvas
     overlay.pen = canvas.Pen
     overlay.targetWindowVisible = false
 
-    local font = backBuffer.Canvas.Font
+    -- local font = backBuffer.Canvas.Font
+    local font = canvas.Font
     font.Name = "Consolas"
     font.Size = 16
     font.Color = 0xFFFFFF
@@ -164,8 +166,8 @@ function Overlay.create(hwndOrCaptionOrClassnameOrNil)
             form.Width = rect.right - rect.left
             form.Height = rect.bottom - rect.top
 
-            backBuffer.Width = form.Width
-            backBuffer.Height = form.Height
+            -- backBuffer.Width = form.Width
+            -- backBuffer.Height = form.Height
         end
     end
 
@@ -176,16 +178,16 @@ function Overlay.create(hwndOrCaptionOrClassnameOrNil)
     end
 
     function overlay.present()
-        overlay.form.Canvas.copyRect(
-            0, 0, form.Width, form.Height,
-            overlay.backBuffer.Canvas,
-            0, 0, form.Width, form.Height
-        )
+        -- overlay.form.Canvas.copyRect(
+        --     0, 0, form.Width, form.Height,
+        --     overlay.backBuffer.Canvas,
+        --     0, 0, form.Width, form.Height
+        -- )
     end
 
     function overlay.destroy()
         form.destroy()
-        backBuffer.destroy()
+        -- backBuffer.destroy()
     end
 
     local timer
