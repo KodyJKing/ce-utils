@@ -65,6 +65,9 @@
         "getWindowProcessID",
         "getWindowCaption",
         "getTickCount",
-        "readFloat"
+        "readFloat",
+        "createFont",
+        "createTimer",
+        "allocateMemory"
     ]
 }

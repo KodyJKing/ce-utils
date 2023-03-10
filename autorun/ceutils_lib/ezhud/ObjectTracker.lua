@@ -14,12 +14,11 @@ local function getProperty(object, property)
     return value
 end
 
-function module.create(structureName)
+function module.create()
     local tracker = {}
 
     local objects = {}
     tracker.objects = objects
-    tracker.structureName = structureName
 
     function tracker.addObject(key, duration, address, caption, color, position)
         local object = objects[key]

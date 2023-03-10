@@ -429,63 +429,63 @@ createTimer(1, function() memrec.Active = false end)
                 <CheatEntry>
                   <ID>35</ID>
                   <Description>"pos.x"</Description>
-                  <LastState Value="28.34565735" RealAddress="7FFD16040D64"/>
+                  <LastState Value="24.84791946" RealAddress="7FFD16040D64"/>
                   <VariableType>Float</VariableType>
                   <Address>halo1.dll+2F00D64</Address>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>36</ID>
                   <Description>"pos.y"</Description>
-                  <LastState Value="-15.90829182" RealAddress="7FFD16040D68"/>
+                  <LastState Value="-31.50899887" RealAddress="7FFD16040D68"/>
                   <VariableType>Float</VariableType>
                   <Address>halo1.dll+2F00D64+4</Address>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>37</ID>
                   <Description>"pos.z"</Description>
-                  <LastState Value="89.97032928" RealAddress="7FFD16040D6C"/>
+                  <LastState Value="89.1472702" RealAddress="7FFD16040D6C"/>
                   <VariableType>Float</VariableType>
                   <Address>halo1.dll+2F00D64+8</Address>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>28</ID>
                   <Description>"fwd.x"</Description>
-                  <LastState Value="0.3138416111" RealAddress="7FFD16040D84"/>
+                  <LastState Value="0.998339355" RealAddress="7FFD16040D84"/>
                   <VariableType>Float</VariableType>
                   <Address>halo1.dll+2F00D64+20</Address>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>29</ID>
                   <Description>"fwd.y"</Description>
-                  <LastState Value="-0.9105833173" RealAddress="7FFD16040D88"/>
+                  <LastState Value="0.04672197998" RealAddress="7FFD16040D88"/>
                   <VariableType>Float</VariableType>
                   <Address>halo1.dll+2F00D64+24</Address>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>30</ID>
                   <Description>"fwd.z"</Description>
-                  <LastState Value="-0.2689635754" RealAddress="7FFD16040D8C"/>
+                  <LastState Value="-0.03369729966" RealAddress="7FFD16040D8C"/>
                   <VariableType>Float</VariableType>
                   <Address>halo1.dll+2F00D64+28</Address>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>31</ID>
                   <Description>"up.x"</Description>
-                  <LastState Value="0.08764152229" RealAddress="7FFD16040D90"/>
+                  <LastState Value="0.03366045654" RealAddress="7FFD16040D90"/>
                   <VariableType>Float</VariableType>
                   <Address>halo1.dll+2F00D64+2C</Address>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>32</ID>
                   <Description>"up.y"</Description>
-                  <LastState Value="-0.2542840242" RealAddress="7FFD16040D94"/>
+                  <LastState Value="0.001575299189" RealAddress="7FFD16040D94"/>
                   <VariableType>Float</VariableType>
                   <Address>halo1.dll+2F00D64+30</Address>
                 </CheatEntry>
                 <CheatEntry>
                   <ID>33</ID>
                   <Description>"up.z"</Description>
-                  <LastState Value="0.9631503224" RealAddress="7FFD16040D98"/>
+                  <LastState Value="0.9994320273" RealAddress="7FFD16040D98"/>
                   <VariableType>Float</VariableType>
                   <Address>halo1.dll+2F00D64+34</Address>
                 </CheatEntry>
@@ -652,6 +652,68 @@ dealloc(newmem)
           </CheatEntries>
         </CheatEntry>
       </CheatEntries>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>58</ID>
+      <Description>"Test HUD"</Description>
+      <LastState Activated="1"/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+
+local HUD = reloadPackage("autorun.ceutils_lib.ezhud.HUD")
+local Vector = reloadPackage("autorun.ceutils_lib.Vector")
+local vec = Vector.vector
+
+local origin = vec(23, -30, 90)
+local a = Vector.add(origin, vec(10, -5, 0))
+local b = Vector.add(origin, vec(10, 5, 0))
+
+myHud = HUD.create()
+myHud.form.OnPaint = function()
+    local cam = myHud.camera
+    Vector.readVec3(getAddress("halo1.dll+2F00D64") ,cam.pos)
+    Vector.readVec3(getAddress("halo1.dll+2F00D64+20") ,cam.forward)
+    cam.verticalFov = readFloat("halo1.dll+2F00D64+38")
+
+    myHud.begin()
+    myHud.line( a, b, 2, 0x00FF00)
+    myHud.text( a, "A", 16, 0x00FF00)
+    myHud.text( b, "B", 16, 0x00FF00)
+    local c = myHud.canvas
+    c.Font.Size = 32
+    c.textOut(1, 1, "Foo")
+end
+
+local timer = createTimer(myHud.form, false)
+timer.Interval = 1000 / 60
+timer.OnTimer = function() myHud.form.repaint() end
+timer.Enabled = true
+
+{$asm}
+
+
+[DISABLE]
+{$lua}
+if syntaxcheck then return end
+
+if myHud then
+    myHud.destroy()
+    myHud = nil
+end
+
+{$asm}
+</AssemblerScript>
+      <Hotkeys>
+        <Hotkey>
+          <Action>Toggle Activation</Action>
+          <Keys>
+            <Key>192</Key>
+          </Keys>
+          <ID>0</ID>
+        </Hotkey>
+      </Hotkeys>
     </CheatEntry>
   </CheatEntries>
   <CheatCodes>
@@ -4608,6 +4670,10 @@ dealloc(newmem)
 </Comments>
   <LuaScript>dofile("autorun/ceutils.lua")
 
+function reloadPackage(path)
+    package.loaded[path] = nil
+    return require(path)
+end
 
 </LuaScript>
   <DisassemblerComments>

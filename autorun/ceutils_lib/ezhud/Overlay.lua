@@ -3,6 +3,10 @@ local json = require("autorun.ceutils_lib.json")
 
 local Overlay = {}
 
+-------------
+-- Helpers --
+-------------
+
 local function clientToScreen(hwnd, point)
     local m = createMemoryStream()
     m.size = 2 * 4
@@ -98,6 +102,10 @@ local function getOverlayForm()
     return f
 end
 
+----------
+-- Main --
+----------
+
 function Overlay.create(hwndOrCaptionOrClassnameOrNil)
     local overlay = {}
 
@@ -118,16 +126,16 @@ function Overlay.create(hwndOrCaptionOrClassnameOrNil)
     end
 
     local f = getOverlayForm()
+    local c = f.canvas
 
     overlay.hwnd = hwnd
     overlay.form = f
     overlay.canvas = f.Canvas
     overlay.pen = f.Canvas.Pen
-    overlay.screenRect = Overlay.getWindowRect(hwnd)
+    overlay.targetWindowVisible = false
 
-    local c = overlay.canvas
     c.Font.Name = "Consolas"
-    c.Font.Size = 16
+    c.Font.Size = 64
     c.Font.Color = 0x00FF00
     c.Font.Style = "fsBold"
     c.Font.Quality = "fqNonAntialiased"
@@ -136,8 +144,11 @@ function Overlay.create(hwndOrCaptionOrClassnameOrNil)
         overlay.form.setLayeredAttributes(0xFF, byteOpacity, 3)
     end
 
+    local screenRect
     function overlay.updatePosition()
-        local rect = overlay.screenRect
+        screenRect = Overlay.getWindowRect(hwnd, screenRect)
+        local rect = screenRect
+        overlay.targetWindowVisible = rect ~= nil
         if rect then
             f.Left = rect.left
             f.Top = rect.top
@@ -147,7 +158,6 @@ function Overlay.create(hwndOrCaptionOrClassnameOrNil)
     end
 
     function overlay.begin()
-        Overlay.getWindowRect(hwnd, overlay.screenRect)
         overlay.updatePosition()
         overlay.canvas.Clear()
     end

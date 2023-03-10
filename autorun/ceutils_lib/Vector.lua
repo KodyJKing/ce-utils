@@ -4,6 +4,7 @@ function module.vector(x, y, z, w, outVec)
     z = z or 0
     w = w or 0
     if not outVec then
+        print("Vector allocated")
         return { x = x, y = y, z = z, w = w }
     end
     outVec.x = x
@@ -11,6 +12,14 @@ function module.vector(x, y, z, w, outVec)
     outVec.z = z
     outVec.w = w
     return outVec
+end
+
+function module.vector3(x, y, z, outVec)
+    return module.vector(x, y, z, 0, outVec)
+end
+
+function module.copy3(from, to)
+    return module.vector3(from.x, from.y, from.z, to)
 end
 
 ----------------------
@@ -24,6 +33,8 @@ function module.dot3(a, b) return a.x * b.x + a.y * b.y + a.z * b.z end
 function module.dot3immediate(ax, ay, az, bx, by, bz) return ax * bx + ay * by + az * bz end
 
 function module.add(a, b, outVec) return module.vector(a.x + b.x, a.y + b.y, a.z + b.z, a.w + b.w, outVec) end
+
+function module.add3Scaled(a, b, s, outVec) return module.vector3(a.x + b.x * s, a.y + b.y * s, a.z + b.z * s, outVec) end
 
 function module.sub(a, b, outVec) return module.vector(a.x - b.x, a.y - b.y, a.z - b.z, a.w - b.w, outVec) end
 
@@ -67,12 +78,17 @@ function module.print3(a) print(module.toString3(a)) end
 ------------
 
 function module.readVec3(address, outVec)
-    return module.vector(
-        readFloat(address + 0x00),
-        readFloat(address + 0x04),
-        readFloat(address + 0x08),
-        0, outVec
+    local size = 3 * 4
+    local mem = allocateMemory(size)
+    copyMemory(address, size, mem)
+    local result = module.vector3(
+        readFloat(mem + 0x00),
+        readFloat(mem + 0x04),
+        readFloat(mem + 0x08),
+        outVec
     )
+    deAlloc(mem)
+    return result
 end
 
 --------------------------------
@@ -81,41 +97,53 @@ end
 
 function module.heightAbovePlane(point, planePoint, planeNormal)
     return module.dot3immediate(
-        point.x - planePoint.x, point.y - planePoint.y, point.z - planePoint.z,
+        point.x - planePoint.x,
+        point.y - planePoint.y,
+        point.z - planePoint.z,
         planeNormal.x, planeNormal.y, planeNormal.z
     )
 end
 
-local clipLine_ab
+local clipLine_ab = module.vector(0, 0, 0)
+local clipLine_abt = module.vector(0, 0, 0)
 function module.clipLine(a, b, planePoint, planeNormal)
     local ah = module.heightAbovePlane(a, planePoint, planeNormal)
     local bh = module.heightAbovePlane(b, planePoint, planeNormal)
 
     if ah < 0 and bh < 0 then return false end
+    if ah > 0 and bh > 0 then return true end
 
-    clipLine_ab = module.sub(b, a, clipLine_ab)
-    local lenSq = module.lengthSquared3(clipLine_ab)
-    local dot = module.dot(clipLine_ab, planeNormal)
+    clipLine_ab = module.sub3(b, a, clipLine_ab)
+    local an = module.dot3(a, planeNormal)
+    local pn = module.dot3(planePoint, planeNormal)
+    local abn = module.dot3(clipLine_ab, planeNormal)
+
+    local t = (pn - an) / abn
 
     if ah < 0 then
-        module.scale(clipLine_ab, dot / lenSq, a)
+        module.add(a, module.scale(clipLine_ab, t, clipLine_abt), a)
     else
-        module.scale(clipLine_ab, dot / lenSq, b)
+        module.add(a, module.scale(clipLine_ab, t, clipLine_abt), b)
     end
+
+    return true
 end
 
 ----------------
 -- Projection --
 ----------------
 
-local camRight
-local camUp
-local toPoint
+local camRight = module.vector(0, 0, 0)
+local camUp = module.vector(0, 0, 0)
+local toPoint = module.vector(0, 0, 0)
 function module.project3DFunction(camPos, camForward, up, verticalFov, screenWidth, screenHeight)
     camRight = module.cross(camForward, up, camRight)
     camUp = module.cross(camRight, camForward, camUp)
 
     local frustumVerticalSlope = math.tan(verticalFov / 2)
+
+    local halfScreenWidth = screenWidth / 2
+    local halfScreenHeight = screenHeight / 2
 
     return function(point, outVec)
         toPoint = module.sub3(point, camPos, toPoint)
@@ -129,8 +157,8 @@ function module.project3DFunction(camPos, camForward, up, verticalFov, screenWid
         local scale = screenHeight / frustumHeightAtDepth
 
         return module.vector(
-            x * scale + screenWidth / 2,
-            y * scale + screenHeight / 2,
+            halfScreenWidth + x * scale,
+            halfScreenHeight - y * scale,
             z, 0, outVec
         )
     end
