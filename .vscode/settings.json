@@ -76,6 +76,12 @@
         "VK_PRINT",
         "VK_SNAPSHOT",
         "VK_MENU",
-        "VK_APPS"
+        "VK_APPS",
+        "bptExecute",
+        "bpmInt3",
+        "co_run",
+        "debug_continueFromBreakpoint",
+        "bpmDebugRegister",
+        "getInstructionSize"
     ]
 }

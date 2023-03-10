@@ -33,8 +33,13 @@ function HUD.create(overlayOrOverlayArgs)
     function hud.begin()
         hud.overlay.begin()
 
+        local cam = hud.camera
+        if cam.posAddress then Vector.readVec3(getAddress(cam.posAddress), cam.pos) end
+        if cam.forwardAddress then Vector.readVec3(getAddress(cam.forwardAddress), cam.forward) end
+        if cam.upAddress then Vector.readVec3(getAddress(cam.upAddress), cam.up) end
+        if cam.verticalFovAddress then cam.verticalFov = readFloat(cam.verticalFovAddress) end
+
         if hud.overlay.targetWindowVisible then
-            local cam = hud.camera
             local form = hud.overlay.form
             hud.project3DFunction = Vector.project3DFunction(
                 cam.pos, cam.forward, cam.up,

@@ -436,63 +436,63 @@ createTimer(1, function() memrec.Active = false end)
                     <CheatEntry>
                       <ID>35</ID>
                       <Description>"pos.x"</Description>
-                      <LastState Value="30.82817078" RealAddress="7FFD16040D64"/>
+                      <LastState Value="31.09597015" RealAddress="7FFD16040D64"/>
                       <VariableType>Float</VariableType>
                       <Address>halo1.dll+2F00D64</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>36</ID>
                       <Description>"pos.y"</Description>
-                      <LastState Value="-32.98000717" RealAddress="7FFD16040D68"/>
+                      <LastState Value="-17.94920158" RealAddress="7FFD16040D68"/>
                       <VariableType>Float</VariableType>
                       <Address>halo1.dll+2F00D64+4</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>37</ID>
                       <Description>"pos.z"</Description>
-                      <LastState Value="87.91401672" RealAddress="7FFD16040D6C"/>
+                      <LastState Value="89.81655884" RealAddress="7FFD16040D6C"/>
                       <VariableType>Float</VariableType>
                       <Address>halo1.dll+2F00D64+8</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>28</ID>
                       <Description>"fwd.x"</Description>
-                      <LastState Value="-0.8443550467" RealAddress="7FFD16040D84"/>
+                      <LastState Value="0.05258408561" RealAddress="7FFD16040D84"/>
                       <VariableType>Float</VariableType>
                       <Address>halo1.dll+2F00D64+20</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>29</ID>
                       <Description>"fwd.y"</Description>
-                      <LastState Value="-0.5107123256" RealAddress="7FFD16040D88"/>
+                      <LastState Value="-0.9803717136" RealAddress="7FFD16040D88"/>
                       <VariableType>Float</VariableType>
                       <Address>halo1.dll+2F00D64+24</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>30</ID>
                       <Description>"fwd.z"</Description>
-                      <LastState Value="0.1619800627" RealAddress="7FFD16040D8C"/>
+                      <LastState Value="-0.1900164485" RealAddress="7FFD16040D8C"/>
                       <VariableType>Float</VariableType>
                       <Address>halo1.dll+2F00D64+28</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>31</ID>
                       <Description>"up.x"</Description>
-                      <LastState Value="0.1385990083" RealAddress="7FFD16040D90"/>
+                      <LastState Value="0.01017726213" RealAddress="7FFD16040D90"/>
                       <VariableType>Float</VariableType>
                       <Address>halo1.dll+2F00D64+2C</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>32</ID>
                       <Description>"up.y"</Description>
-                      <LastState Value="0.08383229375" RealAddress="7FFD16040D94"/>
+                      <LastState Value="-0.1897437125" RealAddress="7FFD16040D94"/>
                       <VariableType>Float</VariableType>
                       <Address>halo1.dll+2F00D64+30</Address>
                     </CheatEntry>
                     <CheatEntry>
                       <ID>33</ID>
                       <Description>"up.z"</Description>
-                      <LastState Value="0.9867940545" RealAddress="7FFD16040D98"/>
+                      <LastState Value="0.9817809463" RealAddress="7FFD16040D98"/>
                       <VariableType>Float</VariableType>
                       <Address>halo1.dll+2F00D64+34</Address>
                     </CheatEntry>
@@ -677,11 +677,11 @@ dealloc(newmem)
 {$lua}
 if syntaxcheck then return end
 
---local HUD = reloadPackage("autorun.ceutils_lib.ezhud.HUD")
---local ObjectTracker = reloadPackage("autorun.ceutils_lib.ezhud.ObjectTracker")
+local HUD = reloadPackage("autorun.ceutils_lib.ezhud.HUD")
+local ObjectTracker = reloadPackage("autorun.ceutils_lib.ezhud.ObjectTracker")
 
-tracker = ezhud.ObjectTracker.create()
-myHud = ezhud.HUD.create()
+tracker = ObjectTracker.create()
+myHud = HUD.create()
 myHud.camera.posAddress = "halo1.dll+2F00D64"
 myHud.camera.forwardAddress = "halo1.dll+2F00D64+20"
 myHud.overlay.renderLoop(60, function()

@@ -15,6 +15,16 @@ local function getProperty(object, property)
     return value
 end
 
+local defaultGetPos_posVec
+local function defaultGetPos(object)
+    if object.address and object.posOffset then
+        return Vector.readVec3(object.address + object.posOffset, defaultGetPos_posVec)
+    end
+    if object.x then
+        return Vector.vector3(object.x, object.y, object.z, defaultGetPos_posVec)
+    end
+end
+
 function module.create()
     local tracker = {}
 
@@ -24,7 +34,7 @@ function module.create()
     function tracker.addObject(key, duration)
         local object = objects[key]
         if not object then
-            object = { key = key }
+            object = { key = key, pos = defaultGetPos }
             objects[key] = object
         end
         object.endTick = getTickCount() + duration
@@ -49,12 +59,12 @@ function module.create()
     --
     local render_posProj = Vector.vector3(0, 0, 0)
     function tracker.render(hud)
+        -- First sort by depth and cull objects outside viewport or render distance.
+        -- Also select the object nearest the center of the screen for highlighting.
+        local cam = hud.camera
         local entries = {}
-
         selectedObjectDist = 1e+9
         selectedObject = nil
-
-        local cam = hud.camera
         tracker.foreach(function(object)
             local pos = getProperty(object, "pos")
             local depth = Vector.heightAbovePlane(pos, cam.pos, cam.forward)
@@ -84,9 +94,9 @@ function module.create()
             local entry = { object = object, depth = depth, x = x, y = y }
             table.insert(entries, entry)
         end)
-
         table.sort(entries, function(a, b) return a.depth > b.depth end)
 
+        -- Then render the sorted and culled object list.
         for i, entry in ipairs(entries) do
             local object = entry.object
             local color = getProperty(object, "color") or 0xFFFFFF
@@ -111,7 +121,7 @@ function module.create()
         local hex = toHex(selectedObject.address)
         writeToClipboard(hex)
         print(hex)
-    end, VK_SNAPSHOT)
+    end, string.byte("P"))
 
     local structForm
     local dissectHotkey = createHotkey(function()
@@ -127,7 +137,7 @@ function module.create()
         else
             common.addStructAddress(structForm, address)
         end
-    end, VK_APPS)
+    end, string.byte("O"))
 
     function tracker.destroy()
         printHotkey.destroy()

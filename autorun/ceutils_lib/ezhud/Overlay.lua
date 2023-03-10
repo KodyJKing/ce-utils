@@ -188,6 +188,15 @@ function Overlay.create(hwndOrCaptionOrClassnameOrNil)
         backBuffer.destroy()
     end
 
+    local timer
+    function overlay.renderLoop(fps, renderFunc)
+        form.OnPaint = renderFunc
+        timer = createTimer(form, false)
+        timer.Interval = 1000 / fps
+        timer.OnTimer = function() form.repaint() end
+        timer.Enabled = true
+    end
+
     function overlay.text(x, y, text, size, color, alignX, alignY)
         alignX = alignX or 0
         alignY = alignY or 0
@@ -207,6 +216,7 @@ function Overlay.create(hwndOrCaptionOrClassnameOrNil)
     ---------------------------------------------------
 
     overlay.updatePosition()
+    overlay.setOpacity(64)
 
     return overlay
 end
